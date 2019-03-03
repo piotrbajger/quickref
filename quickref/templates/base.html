@@ -39,10 +39,10 @@ Quickref
 -->
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    {% if not session.username %}
+                    {% if not current_user.username %}
                     <li><a href="{{ url_for('login') }}">Login</a></li>
                     {% else %}
-                    <li><a href="{{ url_for('index') }}">Logout</a></li>
+                    <li><p>Logged in as {{ current_user.username }} (<a href="{{ url_for('logout') }}">Logout</a>)</p></li>
                     {% endif %}
                 </ul>
             </div>

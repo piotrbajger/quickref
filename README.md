@@ -1,2 +1,2 @@
 # quickref
-Bibliogrphy management webapp. Flask/MongoDB.
+Bibliogrphy management webapp.
