@@ -20,5 +20,4 @@ def create_app(test=False):
 app = create_app()
 Bootstrap(app)
 
-
 from . import routes

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block app_content %}
+
+<h1>Login</h1>
+    {% if error %}
+        <p class=error><strong>Error:</strong> {{ error }}
+    {% endif %}
+
+    <form action="{{ url_for('login') }}" method=post novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.username.label }}:
+            {{ form.username(size=32) }}
+            {% for error in form.username.errors %}
+            <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.password.label }}:
+            {{ form.password(size=32) }}
+            {% for error in form.password.errors %}
+            <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.remember}} {{ form.remember.label }}</p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}
+
