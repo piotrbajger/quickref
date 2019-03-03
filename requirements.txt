@@ -1,0 +1,8 @@
+flask
+flask_cors
+flask-wtf
+flask-bootstrap
+flask-login
+pymongo
+mongomock
+
