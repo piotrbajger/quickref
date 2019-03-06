@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+{% block app_content %}
+<h2>Refs</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select <span class="caret"></span></button>
+                <ul class="dropdown-menu" id="SelectMenu">
+                    <li><a class="dropdown-item" id="SelectAll" href="#">All</a></li>
+                    <li><a class="dropdown-item" id="SelectNone" href="#">None</a></li>
+                    <li><a class="dropdown-item" id="SelectVisible" href="#">Visible</a></li>
+                    <li><a class="dropdown-item" id="SelectInvert" href="#">Invert</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <button id="DeleteSelected" class="btn btn-primary">
+                <span class="glyphicon glyphicon-trash"></span>
+            </button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#UploadRef">
+                <span class="glyphicon glyphicon-plus"></span>
+            </button>
+        </div>
+        <div class="col-sm-2">
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="content col-sm-12">
+            <table id="RefDataTable" class="table-responsive">        
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Author</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Journal</th>
+                        <th scope="col">Year</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody id = "RefTable">
+                {% for ref in refs %}
+                <tr class="filtered">
+                    <td class="clickable-td">
+                        <form>
+                            <input name="selected_{{ ref.id }}" id="checkbox_{{ ref.id }}" type="checkbox" class="form-check-input">
+                        </form>
+                    </td>
+                    <td>{{ ref.authors }}</td>
+                    <td><a href="{{ url_for('refs.ref', ref_id=ref.id) }}">{{ ref.title }}</a></td>
+                    <td>{{ ref.journal }}</td>
+                    <td>{{ ref.year }}</td>
+                    <td class='show-details'>More</td>
+                    <td class='ref_id'>{{ ref.id }} </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" role="dialog" id="UploadRef">
+        <form method="post" action = "{{ url_for('refs.index') }}" name="UploadForm" enctype="multipart/form-data">
+            {{ upload_form.hidden_tag() }}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4>Choose file</h4>
+                    </div>
+                    <div class="modal-body">
+                    <p>Select a bibliography (.bib) file to import:</p>
+                        {{upload_form.filename}}
+                    </div>
+                    <div class="modal-footer"> 
+                        {{upload_form.upload}}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+
+function format(ref_id) {
+    var div = $('<div></div>')
+        .addClass('loading')
+        .text('Loading ref details...');
+    
+    $.ajax({
+        type: 'POST',
+        url: "{{ url_for('refs.index') }}",
+        data: JSON.stringify({
+            ref_id: ref_id,
+        }),
+        dataType: "json",
+        success: function(ref) {
+            div
+                .removeClass('loading')
+                .addClass('p-3');
+            div.html(
+            '<form method="POST" action={{ url_for("refs.index", __METHOD_OVERRIDE__="PUT") }}>' +
+                '<input type="hidden" name="id" value="'+ref_id+'">' +
+                '<div class="form-group">' + 
+                '<p>Authors: <input type="text" class="form-control" name="authors" value="'+ref.author+'"></p>' +
+                '</div>' +
+                '<div class="form-group">' + 
+                '<p>Title: <input type="text" class="form-control" name="title" value="'+ref.title+'"></p>' +
+                '</div>' +
+                '<div class="form-group">' + 
+                '<p>Year: <input type="text" class="form-control" name="year" value="'+ref.year+'"></p>' +
+                '</div>' +
+                '<div class="form-group">' + 
+                '<p>Journal: <input type="text" class="form-control" name="journal" value="'+ref.journal+'"></p>' +
+                '</div>' +
+                '<div class="form-group">' + 
+                '<p>Volume: <input type="text" class="form-control" name="volume" value="'+ref.volume+'"></p>' +
+                '</div>' +
+                '<div class="form-group">' + 
+                '<p>Number: <input type="text" class="form-control" name="number" value="'+ref.number+'"></p>' +
+                '</div>' +
+                '<div class="form-group">' + 
+                '<p>Pages: <input type="text" class="form-control" name="pages" value="'+ref.pages+'"></p>' +
+                '</div>' +
+                '<button type="SUBMIT" class="btn btn-primary">Update</button>' +
+            "</form>"
+            );
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+            alert("Status: " + textStatus);
+            alert("Error: " + errorThrown); 
+        },
+        contentType: 'application/json;charset=UTF-8',
+    });
+    
+    return div;
+}
+    
+$(document).ready(
+    function(){
+        var table = $('#RefDataTable').DataTable({
+            "order": [[1, "asc"]],
+            "paging": false,
+            "columns": [
+                {"orderable": false},
+                {"visible": false},
+                null,
+                null,
+                null,
+                {"orderable": false},
+                {"visible": false},
+            ],  
+        });
+        
+        
+        $('#RefDataTable tbody').on('click', 'td.show-details', function() {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+
+            if (row.child.isShown()) {
+                row.child.hide();
+                tr.removeClass('shown');
+            }else {
+                ref_id = row.data()[row.data().length - 1];
+                row.child(format(ref_id)).show();
+                tr.addClass('shown');
+            }
+        })
+               
+        $('#RefTable').on('click', '.clickable-td', function(event) {
+            $(this).parent().toggleClass('active')
+            $(this).find('input').prop('checked', $(this).parent().hasClass('active'))
+        });
+
+        $('#SelectMenu').on('click', '.dropdown-item',  function(event) {
+            var sel = $(this).attr('id')
+
+            if (sel == 'SelectAll') {
+                $('#RefTable').children('.filtered').each(function(){
+                    $(this).addClass('active')
+                    $(this).find('.clickable-td > form > input').prop('checked', true)
+                });
+            }
+            else if (sel == 'SelectNone') {
+                $('#RefTable').children('.filtered').each(function(){
+                    $(this).removeClass('active')
+                    $(this).find('.clickable-td > form > input').prop('checked', false)
+                });
+            }
+            else if (sel == 'SelectVisible') {
+                $('#RefTable').children('.filtered').each(function(){
+                    if ($(this).css('display') == 'none') {
+                        $(this).removeClass('active')
+                        $(this).find('.clickable-td > form > input').prop('checked', false)
+                    }
+                    else {
+                        $(this).addClass('active')
+                        $(this).find('.clickable-td > form > input').prop('checked', true)
+                    }
+                });
+
+            }
+            else if (sel == 'SelectInvert') {
+                $('#RefTable').children('.filtered').each(function(){
+                    $(this).toggleClass('active')
+                    $(this).find('.clickable-td > form > input').prop('checked', $(this).hasClass('active'))
+                });
+            }
+        });
+
+        $('#DeleteSelected').on('click', function(event) {
+            $.ajax({
+                url: "{{ url_for('refs.index') }}",
+                method: 'DELETE',
+                type: 'DELETE',
+                data: $('#RefTable').find('.form-check-input').serialize(),
+                success: function(result){
+                    window.location.replace("{{ url_for('refs.index') }}");
+                },
+                error: function(error){
+                }
+            });
+        });
+    }
+);
+</script>
+
+{% endblock %}

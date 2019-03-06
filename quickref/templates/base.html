@@ -22,17 +22,18 @@ Quickref
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ url_for('index') }}">Quickref</a>
+                <a class="navbar-brand" href="{{ url_for('static.index') }}">Quickref</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('static.index') }}">Home</a></li>
+                    <li><a href="{{ url_for('refs.index') }}">References</a></li>
 <!--
                     <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="{{ url_for('index') }}">Bibs
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="{{ url_for('static.index') }}">Bibs
                         <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{{ url_for('index') }}">Bibs</a></li>
+                            <li><a href="{{ url_for('refs.index') }}">Bibs</a></li>
                             <li><a href="#">Import</a></li>
                         </ul>
                     </li>
@@ -40,9 +41,9 @@ Quickref
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if not current_user.username %}
-                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('static.login') }}">Login</a></li>
                     {% else %}
-                    <li><p>Logged in as {{ current_user.username }} (<a href="{{ url_for('logout') }}">Logout</a>)</p></li>
+                    <li><p>Logged in as {{ current_user.username }} (<a href="{{ url_for('static.logout') }}">Logout</a>)</p></li>
                     {% endif %}
                 </ul>
             </div>

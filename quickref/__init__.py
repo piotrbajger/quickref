@@ -1,9 +1,9 @@
 from flask import Flask
-from flask_bootstrap import Bootstrap
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import LoginManager
-from .config import Config
+
+from .config import Config, TestConfig
+from .routes.static import static
+from .routes.refs import refs
+from .extensions import bootstrap, db, migrate, login_manager
 
 
 def create_app(test=False):
@@ -15,22 +15,27 @@ def create_app(test=False):
     :returns: A Flask App instance.
     """
     app = Flask(__name__)
-    app.config.from_object(Config)
 
-    Bootstrap(app)
+    if test:
+        app.config.from_object(TestConfig)
+    else:
+        app.config.from_object(Config)
+
+    register_blueprints(app)
+    register_extensions(app)
 
     return app
 
 
-app = create_app()
+def register_blueprints(app):
+    print("Registering blueprints.")
+    app.register_blueprint(static, template_folder='templates')
+    app.register_blueprint(refs, template_folder='templates')
 
-# Set up database
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
 
-# User login
-login = LoginManager(app)
-login.login_view = 'login'
-
-from . import routes
-from .models import user
+def register_extensions(app):
+    print("Registering extensions.")
+    bootstrap.init_app(app)
+    db.init_app(app)
+    migrate.init_app(app, db)
+    login_manager.init_app(app)

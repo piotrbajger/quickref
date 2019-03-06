@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block app_content %}
+{% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+
+<h2>Reference</h2>
+
+<form action="{{ url_for('refs.ref', ref_id=ref.id) }}", method=post novalidate>
+    {{ edit_form.hidden_tag() }}
+    <p>
+        {{ edit_form.title.label }}:<br>
+        {{ edit_form.title(size=64) }} 
+        {% for error in edit_form.title.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ edit_form.authors.label }}:<br>
+        {{ edit_form.authors(size=64) }} 
+        {% for error in edit_form.authors.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ edit_form.journal.label }}:<br>
+        {{ edit_form.journal(size=64) }} 
+        {% for error in edit_form.journal.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ edit_form.year.label }}:<br>
+        {{ edit_form.year }} 
+        {% for error in edit_form.year.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ edit_form.pages_lo.label }}:<br>
+        {{ edit_form.pages_lo }} -- {{ edit_form.pages_hi }} 
+        {% for error in edit_form.pages_lo.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+        {% for error in edit_form.pages_hi.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+
+    {{ edit_form.submit(class_="btn btn-primary") }}
+</form>
+
+{% endblock %}
