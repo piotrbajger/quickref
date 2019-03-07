@@ -6,7 +6,7 @@
         <p class=error><strong>Error:</strong> {{ error }}
     {% endif %}
 
-    <form action="{{ url_for('static.login') }}" method=post novalidate>
+    <form action="{{ url_for('static.login', next=request.args.get('next')) }}" method=post novalidate>
         {{ form.hidden_tag() }}
         <p>
             {{ form.username.label }}:

@@ -15,11 +15,11 @@ class TestStatic(TestCase):
 
         re = self.client.get('/index')
         self.assertEqual(re.status_code, 200)
-    
+
     def test_login(self):
         re = self.client.get('/login')
         self.assertEqual(re.status_code, 200)
-    
+
     def test_logout(self):
         re = self.client.get('/logout', follow_redirects=True)
         self.assertEqual(re.status_code, 200)

@@ -1,5 +1,6 @@
 import flask
 from flask_login import current_user, login_user, logout_user
+from werkzeug.urls import url_parse
 
 from ..models.user import User
 from ..forms.login import LoginForm
@@ -31,7 +32,7 @@ def login():
         flask.flash(f"Welcome {form.username.data}!")
 
         next_page = flask.request.args.get('next')
-        if not next_page or flask.url_parse(next_page).netloc != '':
+        if not next_page or url_parse(next_page).netloc != '':
             next_page = flask.url_for('static.index')
 
         return flask.redirect(next_page)

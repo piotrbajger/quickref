@@ -29,10 +29,28 @@ class TestLogin(TestCase):
             },
             follow_redirects=True
         )
-        
+
         self.assertEqual(re.status_code, 200)
 
         self.assertTrue('Welcome test!' in str(re.data))
+        self.assertTrue('<title>Home</title>' in str(re.data))
+
+    def test_login_valid_redirect(self):
+        """Test that login correctly uses the 'next' parameter"""
+        re = self.client.post(
+            '/login',
+            data={
+                'username': 'test',
+                'password': 'testpass',
+            },
+            query_string={
+                'next': '/refs'
+            },
+            follow_redirects=True
+        )
+
+        self.assertEqual(re.status_code, 200)
+        self.assertTrue('Refs' in str(re.data))
 
     def test_login_invalid(self):
         """Test that login with invalid details does not log in"""
@@ -44,11 +62,11 @@ class TestLogin(TestCase):
             },
             follow_redirects=True
         )
-        
+
         self.assertEqual(re.status_code, 200)
 
         self.assertTrue('Invalid username or password' in str(re.data))
-    
+
     def test_login_required(self):
         """Test that a pages requiring login is inaccessible"""
         re = self.client.get('/refs')
