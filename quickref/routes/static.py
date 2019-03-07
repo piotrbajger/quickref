@@ -1,14 +1,12 @@
 import flask
-from flask_login import current_user, login_user, logout_user, login_required
+from flask_login import current_user, login_user, logout_user
 
-from ..models import user
 from ..models.user import User
-from ..models.ref import Ref
 from ..forms.login import LoginForm
-from ..forms.upload_bib import UploadBibFileForm
 
 
 static = flask.Blueprint('static', __name__)
+
 
 @static.route('/index')
 @static.route('/')
@@ -20,7 +18,7 @@ def index():
 def login():
     if current_user.is_authenticated:
         return flask.redirect(flask.url_for('static.index'))
-    
+
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -28,7 +26,7 @@ def login():
         if user is None or not user.check_password(form.password.data):
             flask.flash("Invalid username or password.")
             return flask.redirect(flask.url_for('static.login'))
-        
+
         login_user(user, remember=form.remember.data)
         flask.flash(f"Welcome {form.username.data}!")
 
@@ -38,7 +36,7 @@ def login():
 
         return flask.redirect(next_page)
 
-    return flask.render_template('login.html', title="Login", form=form)    
+    return flask.render_template('login.html', title="Login", form=form)
 
 
 @static.route('/logout')

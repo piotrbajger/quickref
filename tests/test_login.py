@@ -48,3 +48,10 @@ class TestLogin(TestCase):
         self.assertEqual(re.status_code, 200)
 
         self.assertTrue('Invalid username or password' in str(re.data))
+    
+    def test_login_required(self):
+        """Test that a pages requiring login is inaccessible"""
+        re = self.client.get('/refs')
+
+        # Unauthorised error
+        self.assertEqual(re.status_code, 401)

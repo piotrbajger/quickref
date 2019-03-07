@@ -1,9 +1,7 @@
 import flask
-from flask_login import current_user, login_user, logout_user, login_required
+from flask_login import current_user, login_required
 
 from ..extensions import db
-from ..models import user
-from ..models.user import User
 from ..models.ref import Ref
 from ..forms.upload_bib import UploadBibFileForm
 from ..forms.ref_edit import RefEditForm
@@ -16,7 +14,7 @@ refs = flask.Blueprint('refs', __name__)
 @login_required
 def index():
     refs = Ref.query.filter_by(user_id=current_user.id)
-    
+
     upload_form = UploadBibFileForm()
 
     return flask.render_template('refs.html', title="Refs", refs=refs,
@@ -30,7 +28,7 @@ def ref(ref_id):
         user_id=current_user.id,
         id=ref_id
     ).first_or_404()
-    
+
     pages = ref.pages.replace("--", "-")
     page_lo, page_hi = pages.split("-")
 
@@ -45,6 +43,7 @@ def ref(ref_id):
 
     return flask.render_template('ref.html', title="Edit Ref",
                                  ref=ref, edit_form=edit_form)
+
 
 @refs.route('/ref/<ref_id>', methods=['POST'])
 @login_required
