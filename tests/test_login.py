@@ -53,5 +53,11 @@ class TestLogin(TestCase):
         """Test that a pages requiring login is inaccessible"""
         re = self.client.get('/refs')
 
-        # Unauthorised error
-        self.assertEqual(re.status_code, 401)
+        self.assertEqual(re.status_code, 302)
+
+    def test_login_required_redirect(self):
+        """Test that user is redirected to the login view"""
+        re = self.client.get('/refs', follow_redirects=True)
+
+        self.assertEqual(re.status_code, 200)
+        self.assertTrue("Please log in to access this page." in str(re.data))
