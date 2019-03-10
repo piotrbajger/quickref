@@ -4,43 +4,107 @@
 
 <h2>Reference</h2>
 
-<form action="{{ url_for('refs.ref', ref_id=ref.id) }}", method=post novalidate>
+<form action="{{ url_for('refs.ref', ref_id=ref.id) }}" method=post novalidate>
     {{ edit_form.hidden_tag() }}
     <p>
+        {{ edit_form.entry_type.label }}:
+        {{ edit_form.entry_type(disabled=True) }}
+    </p>
+    <p id="title_par">
         {{ edit_form.title.label }}:<br>
-        {{ edit_form.title(size=64) }} 
+        {{ edit_form.title(size=64) }}
         {% for error in edit_form.title.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
     </p>
-    <p>
-        {{ edit_form.authors.label }}:<br>
-        {{ edit_form.authors(size=64) }} 
-        {% for error in edit_form.authors.errors %}
+    <p id="author_par">
+        {{ edit_form.author.label }}:<br>
+        {{ edit_form.author(size=64) }}
+        {% for error in edit_form.author.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
     </p>
-    <p>
+    <p id="journal_par">
         {{ edit_form.journal.label }}:<br>
-        {{ edit_form.journal(size=64) }} 
+        {{ edit_form.journal(size=64) }}
         {% for error in edit_form.journal.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
     </p>
-    <p>
+    <p id="year_par">
         {{ edit_form.year.label }}:<br>
-        {{ edit_form.year }} 
+        {{ edit_form.year }}
         {% for error in edit_form.year.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
     </p>
-    <p>
+    <p id="month_par">
+        {{ edit_form.month.label }}:<br>
+        {{ edit_form.month }}
+        {% for error in edit_form.month.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p id="volume_par">
+        {{ edit_form.volume.label }}:<br>
+        {{ edit_form.volume }}
+        {% for error in edit_form.volume.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p id="number_par">
+        {{ edit_form.number.label }}:<br>
+        {{ edit_form.number }}
+        {% for error in edit_form.number.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p id="pages_par">
         {{ edit_form.pages_lo.label }}:<br>
-        {{ edit_form.pages_lo }} -- {{ edit_form.pages_hi }} 
+        {{ edit_form.pages_lo }} -- {{ edit_form.pages_hi }}
         {% for error in edit_form.pages_lo.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
         {% for error in edit_form.pages_hi.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+        <br>
+        {% for error in edit_form.pages.errors %}
+        <span style="color: red;">{{error}}</span>
+        {% endfor %}
+    </p>
+    <p id="editor_par">
+        {{ edit_form.editor.label }}:<br>
+        {{ edit_form.editor }}
+        {% for error in edit_form.editor.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p id="publisher_par">
+        {{ edit_form.publisher.label }}:<br>
+        {{ edit_form.publisher }}
+        {% for error in edit_form.publisher.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p id="edition_par">
+        {{ edit_form.edition.label }}:<br>
+        {{ edit_form.edition }}
+        {% for error in edit_form.edition.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p id="series_par">
+        {{ edit_form.series.label }}:<br>
+        {{ edit_form.series }}
+        {% for error in edit_form.series.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p id="address_par">
+        {{ edit_form.address.label }}:<br>
+        {{ edit_form.address }}
+        {% for error in edit_form.address.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
     </p>
@@ -48,4 +112,43 @@
     {{ edit_form.submit(class_="btn btn-primary") }}
 </form>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    show_hide_entry_fields($('#entry_type').val());
+
+    document.getElementById('entry_type').onchange = function(){
+        show_hide_entry_fields($('#entry_type').val());
+    }
+
+    function show_hide_entry_fields(entry_type) {
+        $('p[id*="_par"]').each(function(){
+            $(this).hide()
+        })
+
+        // TODO: Imlement an AJAX request to get these from BibTexMagic
+        if (entry_type == 'article') {
+            $('#title_par').show();
+            $('#author_par').show();
+            $('#journal_par').show();
+            $('#year_par').show();
+            $('#month_par').show();
+            $('#pages_par').show();
+            $('#volume_par').show();
+            $('#number_par').show();
+        }
+        else if(entry_type == 'book') {
+            $('#title_par').show();
+            $('#author_par').show();
+            $('#year_par').show();
+            $('#month_par').show();
+            $('#editor_par').show();
+            $('#publisher_par').show();
+            $('#edition_par').show();
+            $('#seriess_par').show();
+            $('#address_par').show();
+        }
+    }
+});
+</script>
 {% endblock %}

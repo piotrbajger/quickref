@@ -31,7 +31,7 @@
 <div class="container">
     <div class="row">
         <div class="content col-sm-12">
-            <table id="RefDataTable" class="table-responsive">        
+            <table id="RefDataTable" class="table-responsive">
                 <thead>
                     <tr>
                         <th scope="col"></th>
@@ -65,7 +65,7 @@
     </div>
 
     <div class="modal fade" role="dialog" id="UploadRef">
-        <form method="post" action = "{{ url_for('refs.index') }}" name="UploadForm" enctype="multipart/form-data">
+        <form method="post" action = "{{ url_for('refs.upload_bib_file') }}" name="UploadForm" enctype="multipart/form-data">
             {{ upload_form.hidden_tag() }}
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -77,7 +77,7 @@
                     <p>Select a bibliography (.bib) file to import:</p>
                         {{upload_form.filename}}
                     </div>
-                    <div class="modal-footer"> 
+                    <div class="modal-footer">
                         {{upload_form.upload}}
                     </div>
                 </div>
@@ -94,7 +94,7 @@ function format(ref_id) {
     var div = $('<div></div>')
         .addClass('loading')
         .text('Loading ref details...');
-    
+
     $.ajax({
         type: 'POST',
         url: "{{ url_for('refs.index') }}",
@@ -109,41 +109,41 @@ function format(ref_id) {
             div.html(
             '<form method="POST" action={{ url_for("refs.index", __METHOD_OVERRIDE__="PUT") }}>' +
                 '<input type="hidden" name="id" value="'+ref_id+'">' +
-                '<div class="form-group">' + 
+                '<div class="form-group">' +
                 '<p>Authors: <input type="text" class="form-control" name="authors" value="'+ref.author+'"></p>' +
                 '</div>' +
-                '<div class="form-group">' + 
+                '<div class="form-group">' +
                 '<p>Title: <input type="text" class="form-control" name="title" value="'+ref.title+'"></p>' +
                 '</div>' +
-                '<div class="form-group">' + 
+                '<div class="form-group">' +
                 '<p>Year: <input type="text" class="form-control" name="year" value="'+ref.year+'"></p>' +
                 '</div>' +
-                '<div class="form-group">' + 
+                '<div class="form-group">' +
                 '<p>Journal: <input type="text" class="form-control" name="journal" value="'+ref.journal+'"></p>' +
                 '</div>' +
-                '<div class="form-group">' + 
+                '<div class="form-group">' +
                 '<p>Volume: <input type="text" class="form-control" name="volume" value="'+ref.volume+'"></p>' +
                 '</div>' +
-                '<div class="form-group">' + 
+                '<div class="form-group">' +
                 '<p>Number: <input type="text" class="form-control" name="number" value="'+ref.number+'"></p>' +
                 '</div>' +
-                '<div class="form-group">' + 
+                '<div class="form-group">' +
                 '<p>Pages: <input type="text" class="form-control" name="pages" value="'+ref.pages+'"></p>' +
                 '</div>' +
                 '<button type="SUBMIT" class="btn btn-primary">Update</button>' +
             "</form>"
             );
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
             alert("Status: " + textStatus);
-            alert("Error: " + errorThrown); 
+            alert("Error: " + errorThrown);
         },
         contentType: 'application/json;charset=UTF-8',
     });
-    
+
     return div;
 }
-    
+
 $(document).ready(
     function(){
         var table = $('#RefDataTable').DataTable({
@@ -157,10 +157,10 @@ $(document).ready(
                 null,
                 {"orderable": false},
                 {"visible": false},
-            ],  
+            ],
         });
-        
-        
+
+
         $('#RefDataTable tbody').on('click', 'td.show-details', function() {
             var tr = $(this).closest('tr');
             var row = table.row(tr);
@@ -174,7 +174,7 @@ $(document).ready(
                 tr.addClass('shown');
             }
         })
-               
+
         $('#RefTable').on('click', '.clickable-td', function(event) {
             $(this).parent().toggleClass('active')
             $(this).find('input').prop('checked', $(this).parent().hasClass('active'))
@@ -218,7 +218,7 @@ $(document).ready(
 
         $('#DeleteSelected').on('click', function(event) {
             $.ajax({
-                url: "{{ url_for('refs.index') }}",
+                url: "{{ url_for('refs.delete') }}",
                 method: 'DELETE',
                 type: 'DELETE',
                 data: $('#RefTable').find('.form-check-input').serialize(),
