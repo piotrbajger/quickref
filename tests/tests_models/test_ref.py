@@ -1,7 +1,5 @@
 from unittest import TestCase
 
-from bibtexmagic.bibtexmagic import BibTexMagic
-
 from quickref import create_app
 from quickref.models.ref import Ref
 from quickref.models.ref import ref_model_updater
@@ -57,8 +55,8 @@ class TestRefModel(TestCase):
             ref_updated = ref_model_updater(self.test_refs[entry_type],
                                             self.form)
 
-            allowed_fields = BibTexMagic.get_fields_for_entry(entry_type,
-                                                              optional=True)
+            allowed_fields = Ref.get_fields_for_entry(entry_type,
+                                                      optional=True)
             # Cycle through fields allowed for given entry. Verify they were
             # all updated with the form values. Note the special handling of
             # conditionally optional fields.

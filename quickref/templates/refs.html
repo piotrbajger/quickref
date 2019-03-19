@@ -16,12 +16,15 @@
             </div>
         </div>
         <div class="col-sm-4">
-            <button id="DeleteSelected" class="btn btn-primary">
+            <button id="DeleteSelected" class="btn btn-primary" rel="tooltip" title="Delete selected">
                 <span class="glyphicon glyphicon-trash"></span>
             </button>
-            <button class="btn btn-primary" data-toggle="modal" data-target="#UploadRef">
-                <span class="glyphicon glyphicon-plus"></span>
+            <button class="btn btn-primary" data-toggle="modal" rel="tooltip" title="Import" data-target="#UploadRef">
+                <span class="glyphicon glyphicon-import"></span>
             </button>
+            <a href="{{ url_for('refs.export_bib_file') }}" role="button" class="btn btn-primary" rel="tooltip" title="Export" >
+                <span class="glyphicon glyphicon-export"><span>
+            </a>
         </div>
         <div class="col-sm-2">
         </div>
@@ -84,6 +87,7 @@
             </div>
         </form>
     </div>
+
 </div>
 
 
