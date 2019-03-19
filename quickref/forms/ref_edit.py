@@ -1,39 +1,38 @@
-from bibtexmagic.bibtexmagic import BibTexMagic
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SubmitField, SelectField
 from wtforms import validators
 
+from ..models.ref import Ref
+
 
 class RefEditForm(FlaskForm):
-    _CHOICES = list(zip(BibTexMagic.ALLOWED_ENTRIES, BibTexMagic.ALLOWED_ENTRIES))
-    entry_type = SelectField('Type',
-                             choices=_CHOICES,
-                             validators=[validators.DataRequired()])
-    title = StringField('Title', validators=[validators.DataRequired()])
-    author = StringField('Author')
-    journal = StringField('Journal')
-    year = IntegerField('Year')
+    entry_type = StringField('Type', validators=[validators.DataRequired()])
+    title = StringField('Title', validators=[validators.optional()])
+    author = StringField('Author', validators=[validators.optional()])
+    journal = StringField('Journal', validators=[validators.optional()])
+    year = IntegerField('Year', validators=[validators.optional()])
     month = IntegerField('Month', validators=[validators.optional()])
     pages_lo = IntegerField('Pages', validators=[validators.optional()])
     pages_hi = IntegerField('Pages', validators=[validators.optional()])
-    pages = StringField('Pages')
-    volume = StringField('Volume')
-    number = StringField('Number')
-    editor = StringField('Editor')
-    publisher = StringField('Publisher')
-    edition = StringField('Edition')
-    series = StringField('Series')
-    address = StringField('Address')
+    pages = StringField('Pages', validators=[validators.optional()])
+    volume = StringField('Volume', validators=[validators.optional()])
+    number = StringField('Number', validators=[validators.optional()])
+    editor = StringField('Editor', validators=[validators.optional()])
+    publisher = StringField('Publisher', validators=[validators.optional()])
+    edition = StringField('Edition', validators=[validators.optional()])
+    series = StringField('Series', validators=[validators.optional()])
+    address = StringField('Address', validators=[validators.optional()])
 
     submit = SubmitField("Update")
 
     def validate(self):
         """Custom form validator conditional on entry_type"""
         rv = FlaskForm.validate(self)
+        print(self.entry_type.data)
         if not rv:
             return False
 
-        reqs = BibTexMagic.get_fields_for_entry(self.entry_type.data)
+        reqs = Ref.get_fields_for_entry(self.entry_type.data)
         valid = True
 
         for req_field in reqs:

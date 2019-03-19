@@ -35,8 +35,8 @@
                 <thead>
                     <tr>
                         <th scope="col"></th>
-                        <th scope="col">Author</th>
                         <th scope="col">Title</th>
+                        <th scope="col">Author</th>
                         <th scope="col">Journal</th>
                         <th scope="col">Year</th>
                         <th scope="col"></th>
@@ -51,11 +51,11 @@
                             <input name="selected_{{ ref.id }}" id="checkbox_{{ ref.id }}" type="checkbox" class="form-check-input">
                         </form>
                     </td>
-                    <td>{{ ref.authors }}</td>
-                    <td><a href="{{ url_for('refs.ref', ref_id=ref.id) }}">{{ ref.title }}</a></td>
-                    <td>{{ ref.journal }}</td>
+                    <td><a href="{{ url_for('refs.ref', ref_id=ref.id) }}">{% if latex_to_unicode %}{{ latex_to_unicode.convert(ref.title) }}{% else %}{{ ref.title }}{% endif %}</a></td>
+                    <td>{% if latex_to_unicode %}{{ latex_to_unicode.convert(ref.author) }}{% else %}{{ ref.author }}{% endif %}</td>
+                    <td>{% if latex_to_unicode %}{{ latex_to_unicode.convert(ref.journal) }}{% else %}{{ ref.journal }}{% endif %}</td>
                     <td>{{ ref.year }}</td>
-                    <td class='show-details'>More</td>
+                    <td></td>
                     <td class='ref_id'>{{ ref.id }} </td>
                 </tr>
                 {% endfor %}
@@ -90,6 +90,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
 
+/*
+
 function format(ref_id) {
     var div = $('<div></div>')
         .addClass('loading')
@@ -106,33 +108,7 @@ function format(ref_id) {
             div
                 .removeClass('loading')
                 .addClass('p-3');
-            div.html(
-            '<form method="POST" action={{ url_for("refs.index", __METHOD_OVERRIDE__="PUT") }}>' +
-                '<input type="hidden" name="id" value="'+ref_id+'">' +
-                '<div class="form-group">' +
-                '<p>Authors: <input type="text" class="form-control" name="authors" value="'+ref.author+'"></p>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<p>Title: <input type="text" class="form-control" name="title" value="'+ref.title+'"></p>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<p>Year: <input type="text" class="form-control" name="year" value="'+ref.year+'"></p>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<p>Journal: <input type="text" class="form-control" name="journal" value="'+ref.journal+'"></p>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<p>Volume: <input type="text" class="form-control" name="volume" value="'+ref.volume+'"></p>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<p>Number: <input type="text" class="form-control" name="number" value="'+ref.number+'"></p>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<p>Pages: <input type="text" class="form-control" name="pages" value="'+ref.pages+'"></p>' +
-                '</div>' +
-                '<button type="SUBMIT" class="btn btn-primary">Update</button>' +
-            "</form>"
-            );
+            div.html();
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             alert("Status: " + textStatus);
@@ -144,6 +120,8 @@ function format(ref_id) {
     return div;
 }
 
+*/
+
 $(document).ready(
     function(){
         var table = $('#RefDataTable').DataTable({
@@ -151,7 +129,7 @@ $(document).ready(
             "paging": false,
             "columns": [
                 {"orderable": false},
-                {"visible": false},
+                null,
                 null,
                 null,
                 null,
@@ -160,7 +138,7 @@ $(document).ready(
             ],
         });
 
-
+/*
         $('#RefDataTable tbody').on('click', 'td.show-details', function() {
             var tr = $(this).closest('tr');
             var row = table.row(tr);
@@ -174,7 +152,7 @@ $(document).ready(
                 tr.addClass('shown');
             }
         })
-
+*/
         $('#RefTable').on('click', '.clickable-td', function(event) {
             $(this).parent().toggleClass('active')
             $(this).find('input').prop('checked', $(this).parent().hasClass('active'))

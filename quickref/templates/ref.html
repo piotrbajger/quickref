@@ -8,7 +8,10 @@
     {{ edit_form.hidden_tag() }}
     <p>
         {{ edit_form.entry_type.label }}:
-        {{ edit_form.entry_type(disabled=True) }}
+        {{ edit_form.entry_type(readonly=True, size=10) }}
+        {% for error in edit_form.entry_type.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
     </p>
     <p id="title_par">
         {{ edit_form.title.label }}:<br>

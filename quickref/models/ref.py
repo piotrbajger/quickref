@@ -1,4 +1,3 @@
-from bibtexmagic.bibtexmagic import BibTexMagic
 from ..extensions import db
 
 
@@ -26,12 +25,38 @@ class Ref(db.Model):
     def __repr__(self):
         return f"<Ref: {self.title}>"
 
+    ALLOWED_ENTRIES = ['article', 'book']
+
+    ALLOWED_FIELDS = {
+        'article': {
+            'required': ['author', 'title', 'journal', 'year'],
+            'optional': ['volume', 'number', 'pages', 'month']
+        },
+        'book': {
+            'required': [['author', 'editor'], 'title', 'publisher', 'year'],
+            'optional': [['volume', 'number'], 'series', 'address', 'edition',
+                         'month']
+        }
+    }
+
+    @staticmethod
+    def get_fields_for_entry(entry_type, optional=False):
+        """Returns a list of fields allowed for a given entry."""
+        if entry_type not in Ref.ALLOWED_ENTRIES:
+            raise ValueError(f"Entry type {entry_type} is not supported.")
+
+        if optional:
+            return (Ref.ALLOWED_FIELDS[entry_type]['required'] +
+                    Ref.ALLOWED_FIELDS[entry_type]['optional'])
+        else:
+            return Ref.ALLOWED_FIELDS[entry_type]['required']
+
 
 def ref_model_factory_from_form(form):
     """
         Returns a ref model based on entry_type and a RefEditForm.
     """
-    fields = BibTexMagic.get_fields_for_entry(entry_type, optional=True)
+    fields = Ref.get_fields_for_entry(entry_type, optional=True)
 
     ref = Ref()
     ref.entry_type = entry_type
@@ -49,7 +74,7 @@ def ref_model_factory_from_form(form):
 
 def ref_model_factory_from_dict(entry_type, field_vals):
     """Returns a ref model based on entry_type and a dict of fields."""
-    fields = BibTexMagic.get_fields_for_entry(entry_type, optional=True)
+    fields = Ref.get_fields_for_entry(entry_type, optional=True)
 
     ref = Ref()
     ref.entry_type = entry_type
@@ -66,8 +91,8 @@ def ref_model_factory_from_dict(entry_type, field_vals):
 
 def ref_model_updater(ref, form):
     """Updates a ref based on form data."""
-    fields = BibTexMagic.get_fields_for_entry(ref.entry_type,
-                                              optional=True)
+    fields = Ref.get_fields_for_entry(ref.entry_type,
+                                      optional=True)
     if 'pages' in fields:
         form.pages.data = f"{form.pages_lo.data}--{form.pages_hi.data}"
         print(form.pages.data)
