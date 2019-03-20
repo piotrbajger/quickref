@@ -22,6 +22,27 @@ class Ref(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+    def to_dict(self):
+        fields = Ref.get_fields_for_entry(self.entry_type, optional=True)
+
+        return_dict = {
+            "ENTRYTYPE": self.entry_type,
+            "ID": "TODO"
+        }
+
+        for field in fields:
+            if type(field) == str:
+                val = self.__getattribute__(field)
+                if val is not None:
+                    return_dict[field] = str(val)
+            else:
+                for subf in field:
+                    val = self.__getattribute__(subf)
+                    if val is not None:
+                        return_dict[subf] = str(val)
+
+        return return_dict
+
     def __repr__(self):
         return f"<Ref: {self.title}>"
 

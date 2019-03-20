@@ -110,6 +110,19 @@ def upload_bib_file():
     return flask.redirect(flask.url_for('refs.index'))
 
 
+@refs.route('/refs/export/', methods=['GET'])
+@login_required
+def export_bib_file():
+    refs = Ref.query.filter_by(user_id=current_user.id)
+
+    bibtex_db = bibtexparser.bibdatabase.BibDatabase()
+    bibtex_db.entries = [ref.to_dict() for ref in refs]
+
+    writer = bibtexparser.bwriter.BibTexWriter()
+
+    return flask.Response(writer.write(bibtex_db), mimetype="text/plain", headers={"Content-Disposition": "attachement;filename=bib.bib"})
+
+
 @refs.route('/refs/delete/', methods=['DELETE'])
 @login_required
 def delete():
