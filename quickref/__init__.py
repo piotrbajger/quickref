@@ -38,5 +38,7 @@ def register_extensions(app):
     bootstrap.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
+    # For the "flask db migrate" to work...
+    from .models import journal, ref, user
     login_manager.init_app(app)
     login_manager.login_view = '/login'
