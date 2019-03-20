@@ -7,4 +7,5 @@ flask-sqlalchemy
 flask-migrate
 pymongo
 mongomock
-bibtexmagic
+bibtexparser
+arxiv
