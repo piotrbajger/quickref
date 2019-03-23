@@ -1,12 +1,8 @@
 {% extends 'bootstrap/base.html' %}
 
 {% block scripts %}
-{{super()}}
-<link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 {% endblock %}
-        
+
 {% if title %}
 Quickref | {{ title }}
 {% else %}
@@ -63,7 +59,7 @@ Quickref
         {% endwith %}
 
         {% block app_content %}{% endblock %}
-    </div>                          
+    </div>
 
 {% endblock %}
 

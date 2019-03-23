@@ -29,7 +29,7 @@
     </p>
     <p id="journal_par">
         {{ edit_form.journal.label }}:<br>
-        {{ edit_form.journal(size=64) }}
+        {{ edit_form.journal(size=64, autocomplete="off") }}
         {% for error in edit_form.journal.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
@@ -115,14 +115,45 @@
     {{ edit_form.submit(class_="btn btn-primary") }}
 </form>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link   rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
 $(document).ready(function(){
+    previously_typed = "";
     show_hide_entry_fields($('#entry_type').val());
 
     document.getElementById('entry_type').onchange = function(){
         show_hide_entry_fields($('#entry_type').val());
     }
+
+    function journal_lookup(){
+        setTimeout(function(){
+            journal_typed = $('#journal').val();
+            if (journal_typed != "" && journal_typed.length > 3 && journal_typed != previously_typed){
+                $.ajax({
+                    type: 'GET',
+                    url: "{{ url_for('journals.lookup') }}",
+                    data: {
+                        journal_typed: journal_typed,
+                    },
+                    dataType: "json",
+                    success: function(suggestion_list) {
+                        $('#journal').autocomplete({
+                            source: suggestion_list,
+                        });
+                        previously_typed = journal_typed;
+                    },
+                    error: function(err) {
+                        console.log("Error!");
+                    },
+                    contentType: 'application/json;charset=UTF-8',
+                });
+            }
+        }, 500);
+    }
+
+    $('#journal').on('keyup paste', journal_lookup);
 
     function show_hide_entry_fields(entry_type) {
         $('p[id*="_par"]').each(function(){

@@ -60,7 +60,6 @@ def ref(ref_id):
 @login_required
 def ref_post(ref_id):
     form = RefEditForm()
-    print(form.title.data)
 
     ref = Ref.query.filter_by(
         user_id=current_user.id,
@@ -95,7 +94,6 @@ def upload_bib_file():
         bibtex_db = bibtexparser.load(form.filename.data, parser)
 
         for entry in bibtex_db.entries:
-            print(entry)
             try:
                 ref = ref_model_factory_from_dict(entry['ENTRYTYPE'], entry)
                 ref.owner = current_user
@@ -120,7 +118,7 @@ def export_bib_file():
 
     writer = bibtexparser.bwriter.BibTexWriter()
 
-    return flask.Response(writer.write(bibtex_db), mimetype="text/plain", headers={"Content-Disposition": "attachement;filename=bib.bib"})
+    return flask.Response(writer.write(bibtex_db), mimetype="text/plain", headers={"Content-Disposition": "attachement;filename=quickref.bib"})
 
 
 @refs.route('/refs/delete/', methods=['DELETE'])
