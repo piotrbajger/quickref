@@ -47,6 +47,7 @@ def ref(ref_id):
         page_lo, page_hi = None, None
 
     edit_form = RefEditForm(
+        bib_key = ref.bib_id,
         pages_lo=page_lo,
         pages_hi=page_hi,
         **ref.__dict__
@@ -118,7 +119,11 @@ def export_bib_file():
 
     writer = bibtexparser.bwriter.BibTexWriter()
 
-    return flask.Response(writer.write(bibtex_db), mimetype="text/plain", headers={"Content-Disposition": "attachement;filename=quickref.bib"})
+    return flask.Response(
+        writer.write(bibtex_db),
+        mimetype="text/plain",
+        headers={"Content-Disposition": "attachement;filename=quickref.bib"}
+    )
 
 
 @refs.route('/refs/delete/', methods=['DELETE'])
