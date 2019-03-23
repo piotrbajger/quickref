@@ -3,6 +3,7 @@ from flask import Flask
 from .config import Config, TestConfig
 from .routes.static import static
 from .routes.refs import refs
+from .routes.journals import journals
 from .extensions import bootstrap, db, migrate, login_manager
 
 
@@ -31,6 +32,7 @@ def register_blueprints(app):
     print("Registering blueprints.")
     app.register_blueprint(static, template_folder='templates')
     app.register_blueprint(refs, template_folder='templates')
+    app.register_blueprint(journals, template_folder='templates')
 
 
 def register_extensions(app):
