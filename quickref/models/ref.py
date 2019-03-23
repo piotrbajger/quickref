@@ -3,6 +3,7 @@ from ..extensions import db
 
 class Ref(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    bib_id = db.Column(db.String(32))
     entry_type = db.Column(db.Integer)
     title = db.Column(db.String(256), index=True)
     author = db.Column(db.String(256))
@@ -27,7 +28,7 @@ class Ref(db.Model):
 
         return_dict = {
             "ENTRYTYPE": self.entry_type,
-            "ID": "TODO"
+            "ID": self.bib_id,
         }
 
         for field in fields:
@@ -99,6 +100,7 @@ def ref_model_factory_from_dict(entry_type, field_vals):
 
     ref = Ref()
     ref.entry_type = entry_type
+    ref.bib_id = field_vals["ID"]
 
     for field in fields:
         if type(field) == str:

@@ -7,11 +7,18 @@
 <form action="{{ url_for('refs.ref', ref_id=ref.id) }}" method=post novalidate>
     {{ edit_form.hidden_tag() }}
     <p>
+        <div>
         {{ edit_form.entry_type.label }}:
         {{ edit_form.entry_type(readonly=True, size=10) }}
         {% for error in edit_form.entry_type.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
+        {{ edit_form.bib_key.label }}:
+        {{ edit_form.bib_key(size=6) }}
+        {% for error in edit_form.bib_key.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+        </div>
     </p>
     <p id="title_par">
         {{ edit_form.title.label }}:<br>

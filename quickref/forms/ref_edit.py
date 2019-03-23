@@ -7,6 +7,7 @@ from ..models.ref import Ref
 
 class RefEditForm(FlaskForm):
     entry_type = StringField('Type', validators=[validators.DataRequired()])
+    bib_key = StringField('Key')
     title = StringField('Title', validators=[validators.optional()])
     author = StringField('Author', validators=[validators.optional()])
     journal = StringField('Journal', validators=[validators.optional()])
@@ -52,10 +53,10 @@ class RefEditForm(FlaskForm):
                     for formfield in formfields:
                         formfield.errors.append(msg)
                         valid = False
+        return valid
 
         if (not self.pages_lo.data and self.pages_hi.data) or \
            (not self.pages_hi.data and self.pages_lo.data):
             self.pages.errors.append("Both (or none) Pages fields required.")
 
-        return valid
 
