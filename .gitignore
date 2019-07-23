@@ -108,3 +108,6 @@ venv.bak/
 
 # db
 **.db
+
+# workspace
+*.code-workspace
