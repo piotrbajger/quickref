@@ -19,7 +19,7 @@ def lookup():
 
     result = Journal.query.filter(
         func.lower(Journal.name).like(f"%{typed}%")
-    ).limit(MAX_RESULTS).all()
+    ).all()
 
     names = [r.name for r in result]
     dists = [editdistance.eval(typed, name.lower()) for name in names]
@@ -28,5 +28,6 @@ def lookup():
     response = list(zip(names, dists))
     response.sort(key=lambda x: x[1])
     response = [r[0] for r in response]
+    response = response[:MAX_RESULTS]
 
     return json.dumps(response)
